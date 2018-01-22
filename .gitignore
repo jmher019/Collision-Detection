@@ -7,3 +7,6 @@
 
 # ignore lib folder which contains glm source
 /lib/*
+
+# ignore main.cpp file that I use for test purposes (I will add better test files in the future)
+/src/sources/main.cpp
