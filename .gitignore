@@ -1,0 +1,9 @@
+# ignore visual studio stuff
+*.sln
+/.vs/*
+/CollisionDetection/*
+/Debug/
+/x64/*
+
+# ignore lib folder which contains glm source
+/lib/*
