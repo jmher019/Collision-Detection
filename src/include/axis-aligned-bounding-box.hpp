@@ -16,6 +16,9 @@
  *	The intended use case of this class is for simple rigid body collision
  */
 
+#include <vector>
+
+#include <triangle.hpp>
 #include <bounding-volume.hpp>
 #include <bounding-sphere.hpp>
 
@@ -46,6 +49,9 @@ namespace collision {
 
 		// computes the squared distance between a point and the box
 		float getSquaredDistancePtPointAABB(const vec3& p) const;
+
+		// gets the triangles that make up the box
+		vector<Triangle> getTriangles(void) const;
 
 		// handles updating transform matrix for this geometry
 		void update(const mat4& transform);

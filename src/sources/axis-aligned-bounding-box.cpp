@@ -79,6 +79,103 @@ float AxisAlignedBoundingBox::getSquaredDistancePtPointAABB(const vec3& p) const
 }
 
 /**
+ * @brief gets the triangles that make up the box
+ *
+ * @return a vector of triangles that make up the box
+ */
+vector<Triangle> AxisAlignedBoundingBox::getTriangles(void) const {
+	vector<Triangle> triangles;
+
+	const vec3 center = vec3(getCenter());
+
+	// +x face
+	// center + <he.x, +/-he.y, +/-he.z>
+	triangles.push_back(Triangle(
+		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, halfExtents.z)
+	));
+
+	triangles.push_back(Triangle(
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, halfExtents.z)
+	));
+
+	// -x face
+	// center + <-he.x, +/-he.y, +/-he.z>
+	triangles.push_back(Triangle(
+		center + vec3(-halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z)
+	));
+
+	triangles.push_back(Triangle(
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z)
+	));
+
+	// +y face
+	// center + <+/-he.x, he.y, +/-he.z>
+	triangles.push_back(Triangle(
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
+	));
+
+	triangles.push_back(Triangle(
+		center + vec3(halfExtents.x, halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
+	));
+
+	// -y face
+	// center + <+/-he.x, -he.y, +/-he.z>
+	triangles.push_back(Triangle(
+		center + vec3(-halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z)
+	));
+
+	triangles.push_back(Triangle(
+		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z)
+	));
+
+	// +z face
+	// center + <+/-he.x, +/-he.y, he.z>
+	triangles.push_back(Triangle(
+		center + vec3(-halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z)
+	));
+
+	triangles.push_back(Triangle(
+		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z)
+	));
+
+	// -z face
+	// center + <+/-he.x, +/-he.y, -he.z>
+	triangles.push_back(Triangle(
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
+	));
+
+	triangles.push_back(Triangle(
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, -halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
+	));
+
+	return triangles;
+}
+
+/**
  * @brief handles updating transform matrix for this geometry
  *
  * @param transform will be used to update the geometry
