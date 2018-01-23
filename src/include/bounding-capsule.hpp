@@ -4,7 +4,7 @@
 /**
  *	@file		bounding-capsule.hpp
  *	@author		Jonathan Hernandez (jmher019)
- *	@date		1/21/2018
+ *	@date		1/22/2018
  *	@version	1.0
  *
  *	@brief BoundingCapsule derived class declaration
