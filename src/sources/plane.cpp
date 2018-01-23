@@ -105,8 +105,8 @@ bool Plane::isPointOutsideOfPlane(const vec3& p, const vec3& n, const float& d) 
  * @return a bool stating whether the points lie on opposited sides of the plane or not
  */
 bool Plane::arePointsOnOppositeSides(const vec3& p1, const vec3& p2) const {
-	const float signp1 = dot(p1, n);
-	const float signp2 = dot(p2, n);
+	const float signp1 = dot(vec4(p1, 1.f), vec4(n, d));
+	const float signp2 = dot(vec4(p2, 1.f), vec4(n, d));
 
 	return signp1 * signp2 < 0.f;
 }
