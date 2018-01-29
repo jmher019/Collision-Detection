@@ -21,13 +21,15 @@ using namespace collision;
  * @brief Default constructor
  */
 BoundingCapsule::BoundingCapsule(const Line& l, const vec3& lineNormal, const float& radius):
-	l(l), lineNormal(normalize(lineNormal)), radius(radius) {}
+	l(l), lineNormal(normalize(lineNormal)), radius(radius) {
+	secondLineNormal = normalize(cross(l.getPointB() - l.getPointA(), this->lineNormal));
+}
 
 /**
  * @brief Copy constructor
  */
 BoundingCapsule::BoundingCapsule(const BoundingCapsule& bc):
-	l(bc.l), lineNormal(bc.lineNormal), radius(bc.radius) {}
+	l(bc.l), lineNormal(bc.lineNormal), secondLineNormal(bc.secondLineNormal), radius(bc.radius) {}
 
 /**
  * @brief Move constructor
@@ -35,6 +37,7 @@ BoundingCapsule::BoundingCapsule(const BoundingCapsule& bc):
 BoundingCapsule::BoundingCapsule(BoundingCapsule&& bc):
 	radius(bc.radius), l(bc.l) {
 	lineNormal = move(bc.lineNormal);
+	secondLineNormal = move(bc.secondLineNormal);
 }
 
 /**
@@ -47,12 +50,21 @@ const Line& BoundingCapsule::getLine(void) const {
 }
 
 /**
- * @breif gets the normal to the line
+ * @brief gets the normal to the line
  *
  * @return the normal to the line
  */
 const vec3& BoundingCapsule::getLineNormal(void) const {
 	return lineNormal;
+}
+
+/**
+ * @brief gets the normal to the line and line normal
+ *
+ * return the normal to the line and line normal
+ */
+const vec3& BoundingCapsule::getSecondLineNormal(void) const {
+	return secondLineNormal;
 }
 
 /**
@@ -71,18 +83,29 @@ const float& BoundingCapsule::getRadius(void) const {
  * @return void
  */
 void BoundingCapsule::update(const mat4& transform) {
-	const vec3 center = vec3(getCenter()) + vec3(transform[3]);
+	this->transform = transform * this->transform;
+	const vec3 center = vec3(getCenter());
 	
 	const mat3 upperLeft = mat3(transform);
 	const vec3 lineVector = 0.5f * (l.getPointB() - l.getPointA());
 
 	const vec3 nextLineVector = upperLeft * lineVector;
 	const vec3 nextNormal = upperLeft * (radius * lineNormal);
+	const vec3 nextSecondNormal = upperLeft * (radius * secondLineNormal);
 
 	// update everything
-	this->transform = transform * this->transform;
-	radius = length(nextNormal);
+	const float radius1 = length(nextNormal);
+	const float radius2 = length(nextSecondNormal);
+
+	if (radius1 > radius2) {
+		radius = radius1;
+	}
+	else {
+		radius = radius2;
+	}
+
 	lineNormal = normalize(nextNormal);
+	secondLineNormal = normalize(nextSecondNormal);
 	l.setPointA(center - nextLineVector);
 	l.setPointB(center + nextLineVector);
 }

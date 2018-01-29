@@ -190,8 +190,7 @@ void AxisAlignedBoundingBox::update(const mat4& transform) {
 		}
 	}
 
-	this->transform = mat4(upperLeft);
-	this->transform[3] = this->transform[3] + transform[3];
+	this->transform = transform * this->transform;
 }
 
 /**

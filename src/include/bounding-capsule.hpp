@@ -24,6 +24,7 @@ namespace collision {
 	private:
 		Line l; // the line representing the cylindrical part of the capsule
 		vec3 lineNormal; // any vector normal to the line direction
+		vec3 secondLineNormal; // this vector will be normal to the line and line normal
 		float radius; // radius of the spheres at the ends
 
 	public:
@@ -41,6 +42,9 @@ namespace collision {
 
 		// get the normal to the line
 		const vec3& getLineNormal(void) const;
+
+		// get the normal to the line and line normal
+		const vec3& getSecondLineNormal(void) const;
 
 		// get the radius of the spheres at the end
 		const float& getRadius(void) const;

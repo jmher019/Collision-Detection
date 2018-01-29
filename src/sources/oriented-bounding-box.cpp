@@ -101,14 +101,14 @@ vector<Triangle> OrientedBoundingBox::getTriangles(void) const {
 	// -x transformed face
 	triangles.push_back(Triangle(
 		center - transformedX - transformedY + transformedZ,
-		center - transformedX - transformedY - transformedZ,
-		center - transformedX + transformedY + transformedZ
+		center - transformedX + transformedY + transformedZ,
+		center - transformedX - transformedY - transformedZ
 	));
 
 	triangles.push_back(Triangle(
 		center - transformedX - transformedY - transformedZ,
-		center - transformedX + transformedY - transformedZ,
-		center - transformedX + transformedY + transformedZ
+		center - transformedX + transformedY + transformedZ,
+		center - transformedX + transformedY - transformedZ
 	));
 
 	// +y transformed face
@@ -127,14 +127,14 @@ vector<Triangle> OrientedBoundingBox::getTriangles(void) const {
 	// -y transformed face
 	triangles.push_back(Triangle(
 		center - transformedX - transformedY + transformedZ,
-		center + transformedX - transformedY + transformedZ,
-		center - transformedX - transformedY - transformedZ
+		center - transformedX - transformedY - transformedZ,
+		center + transformedX - transformedY + transformedZ
 	));
 
 	triangles.push_back(Triangle(
 		center + transformedX - transformedY + transformedZ,
-		center + transformedX - transformedY - transformedZ,
-		center - transformedX - transformedY - transformedZ
+		center - transformedX - transformedY - transformedZ,
+		center + transformedX - transformedY - transformedZ
 	));
 
 	// +z transformed face
@@ -153,14 +153,14 @@ vector<Triangle> OrientedBoundingBox::getTriangles(void) const {
 	// -z transformed face
 	triangles.push_back(Triangle(
 		center - transformedX - transformedY - transformedZ,
-		center + transformedX - transformedY - transformedZ,
-		center - transformedX + transformedY - transformedZ
+		center - transformedX + transformedY - transformedZ,
+		center + transformedX - transformedY - transformedZ
 	));
 
 	triangles.push_back(Triangle(
 		center + transformedX - transformedY - transformedZ,
-		center + transformedX + transformedY - transformedZ,
-		center - transformedX + transformedY - transformedZ
+		center - transformedX + transformedY - transformedZ,
+		center + transformedX + transformedY - transformedZ
 	));
 
 	return triangles;
@@ -179,8 +179,8 @@ vec3 OrientedBoundingBox::getClosestPtPointOBB(const vec3& p) const {
 	vec3 result = center;
 
 	const vec3 xTransformed = getTransformedXAxis();
-	const vec3 yTransformed = getTransformedXAxis();
-	const vec3 zTransformed = getTransformedXAxis();
+	const vec3 yTransformed = getTransformedYAxis();
+	const vec3 zTransformed = getTransformedZAxis();
 
 	// project d onto the transformed x-axis to get the distance
 	// along the axis of d from the box center
@@ -337,12 +337,9 @@ bool OrientedBoundingBox::isIntersecting(BoundingVolume*& bv) const {
 		float dist2 = triangles[0].getClosestPtSegmentTriangle(c1, c2, bCapsule->getLine());
 
 		for (size_t i = 1; i < triangles.size(); i++) {
-			vec3 c3, c4;
-			float currDist2 = triangles[i].getClosestPtSegmentTriangle(c3, c4, bCapsule->getLine());
+			float currDist2 = triangles[i].getClosestPtSegmentTriangle(c1, c2, bCapsule->getLine());
 			if (currDist2 < dist2) {
 				dist2 = currDist2;
-				c1 = c3;
-				c2 = c4;
 			}
 		}
 
