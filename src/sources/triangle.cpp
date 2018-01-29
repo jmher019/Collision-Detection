@@ -440,15 +440,15 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const Line& l) c
 	vector<pair<vec3, vec3>> pairs;
 	// closest point between l and v1 -> v2 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	l.getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, v1, v2);
+	l.getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, v1, v2);
 
 	// closest point between l and v2 -> v3 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	l.getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, v2, v3);
+	l.getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, v2, v3);
 
 	// closest point between l and v3 -> v1 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	l.getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, v3, v1);
+	l.getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, v3, v1);
 
 	// closest point from the first vertex in l to the plane containing the triangle
 	const vec3 n = getNormal();
@@ -463,7 +463,7 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const Line& l) c
 	const vec3 qc = Plane::closestPtPointPlane(l.getPointB(), n, d);
 	// check if that point is within the triangle
 	if (isWithinTriangle(qc)) {
-		pairs.push_back(make_pair(l.getPointB(), pc));
+		pairs.push_back(make_pair(l.getPointB(), qc));
 	}
 
 	pair<vec3, vec3>& result = pairs[0];
@@ -525,7 +525,7 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const vec3& p, c
 	const vec3 qc = Plane::closestPtPointPlane(q, n, d);
 	// check if that point is within the triangle
 	if (isWithinTriangle(qc)) {
-		pairs.push_back(make_pair(q, pc));
+		pairs.push_back(make_pair(q, qc));
 	}
 
 	pair<vec3, vec3>& result = pairs[0];
@@ -589,7 +589,7 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const Line& l, c
 	const vec3 qc = Plane::closestPtPointPlane(l.getPointB(), n, d);
 	// check if that point is within the triangle
 	if (isWithinTriangle(qc, v1, v2, v3)) {
-		pairs.push_back(make_pair(l.getPointB(), pc));
+		pairs.push_back(make_pair(l.getPointB(), qc));
 	}
 
 	pair<vec3, vec3>& result = pairs[0];
@@ -654,7 +654,7 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const vec3& p, c
 	const vec3 qc = Plane::closestPtPointPlane(q, n, d);
 	// check if that point is within the triangle
 	if (isWithinTriangle(qc, v1, v2, v3)) {
-		pairs.push_back(make_pair(q, pc));
+		pairs.push_back(make_pair(q, qc));
 	}
 
 	pair<vec3, vec3>& result = pairs[0];

@@ -82,7 +82,7 @@ vec3 Plane::closestPtPointPlane(const vec3& p, const vec3& n, const float& d) {
  * @return a bool that determines if the point is outside the plane or not
  */
 bool Plane::isPointOutsideOfPlane(const vec3& p) const {
-	return fabs(dot(p, n) - d) < 1e-8f;
+	return fabs(dot(p, n) - d) > 1e-8f;
 }
 
 /**
@@ -94,7 +94,7 @@ bool Plane::isPointOutsideOfPlane(const vec3& p) const {
  * @return a bool that determines if the point is outside the plane or not
  */
 bool Plane::isPointOutsideOfPlane(const vec3& p, const vec3& n, const float& d) {
-	return fabs(dot(p, n) - d) < 1e-8f;
+	return fabs(dot(p, n) - d) > 1e-8f;
 }
 
 /**

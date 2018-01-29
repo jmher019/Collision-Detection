@@ -183,7 +183,7 @@ float Line::getSquaredDistPointSegment(const vec3& p, const vec3& a, const vec3&
 float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l2) const {
 	const vec3 d1 = b - a;
 	const vec3 d2 = l2.b - l2.a;
-	const vec3 r = l2.a - a;
+	const vec3 r = a - l2.a;
 	const float b = dot(d1, d1);
 	const float e = dot(d2, d2);
 	const float f = dot(d2, r);
@@ -251,7 +251,7 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l2) const
 float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p2, const vec3& q2) const {
 	const vec3 d1 = b - a;
 	const vec3 d2 = q2 - p2;
-	const vec3 r = p2 - a;
+	const vec3 r = a - p2;
 	const float b = dot(d1, d1);
 	const float e = dot(d2, d2);
 	const float f = dot(d2, r);
@@ -318,7 +318,7 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p2, const
 float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l1, const Line& l2) {
 	const vec3 d1 = l1.b - l1.a;
 	const vec3 d2 = l2.b - l2.a;
-	const vec3 r = l2.a - l1.a;
+	const vec3 r = l1.a - l2.a;
 	const float b = dot(d1, d1);
 	const float e = dot(d2, d2);
 	const float f = dot(d2, r);
@@ -386,7 +386,7 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l1, const
 float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p1, const vec3& q1, const Line& l2) {
 	const vec3 d1 = q1 - p1;
 	const vec3 d2 = l2.b - l2.a;
-	const vec3 r = l2.a - p1;
+	const vec3 r = p1 - l2.a;
 	const float b = dot(d1, d1);
 	const float e = dot(d2, d2);
 	const float f = dot(d2, r);
@@ -454,7 +454,7 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p1, const
 float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l1, const vec3& p2, const vec3& q2) {
 	const vec3 d1 = l1.b - l1.a;
 	const vec3 d2 = q2 - p2;
-	const vec3 r = p2 - l1.a;
+	const vec3 r = l1.a - p2;
 	const float b = dot(d1, d1);
 	const float e = dot(d2, d2);
 	const float f = dot(d2, r);
@@ -523,7 +523,7 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l1, const
 float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p1, const vec3& q1, const vec3& p2, const vec3& q2) {
 	const vec3 d1 = q1 - p1;
 	const vec3 d2 = q2 - p2;
-	const vec3 r = p2 - p1;
+	const vec3 r = p1 - p2;
 	const float b = dot(d1, d1);
 	const float e = dot(d2, d2);
 	const float f = dot(d2, r);
