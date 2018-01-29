@@ -106,14 +106,14 @@ vector<Triangle> AxisAlignedBoundingBox::getTriangles(void) const {
 	// center + <-he.x, +/-he.y, +/-he.z>
 	triangles.push_back(Triangle(
 		center + vec3(-halfExtents.x, -halfExtents.y, halfExtents.z),
-		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
-		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z)
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z)
 	));
 
 	triangles.push_back(Triangle(
 		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
-		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z),
-		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z)
+		center + vec3(-halfExtents.x, halfExtents.y, halfExtents.z),
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
 	));
 
 	// +y face
@@ -134,14 +134,14 @@ vector<Triangle> AxisAlignedBoundingBox::getTriangles(void) const {
 	// center + <+/-he.x, -he.y, +/-he.z>
 	triangles.push_back(Triangle(
 		center + vec3(-halfExtents.x, -halfExtents.y, halfExtents.z),
-		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
-		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z)
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z)
 	));
 
 	triangles.push_back(Triangle(
 		center + vec3(halfExtents.x, -halfExtents.y, halfExtents.z),
-		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
-		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z)
+		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z)
 	));
 
 	// +z face
@@ -162,14 +162,14 @@ vector<Triangle> AxisAlignedBoundingBox::getTriangles(void) const {
 	// center + <+/-he.x, +/-he.y, -he.z>
 	triangles.push_back(Triangle(
 		center + vec3(-halfExtents.x, -halfExtents.y, -halfExtents.z),
-		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
-		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z)
 	));
 
 	triangles.push_back(Triangle(
 		center + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z),
-		center + vec3(halfExtents.x, halfExtents.y, -halfExtents.z),
-		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z)
+		center + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z),
+		center + vec3(halfExtents.x, halfExtents.y, -halfExtents.z)
 	));
 
 	return triangles;
@@ -183,8 +183,6 @@ vector<Triangle> AxisAlignedBoundingBox::getTriangles(void) const {
  */
 void AxisAlignedBoundingBox::update(const mat4& transform) {
 	const mat3& upperLeft = mat3(transform);
-	const vec4& center = transform[3];
-
 	for (int i = 0; i < 3; i++) {
 		halfExtents[i] = 0.f;
 		for (int j = 0; j < 3; j++) {
@@ -193,7 +191,7 @@ void AxisAlignedBoundingBox::update(const mat4& transform) {
 	}
 
 	this->transform = mat4(upperLeft);
-	this->transform[3] = center;
+	this->transform[3] = this->transform[3] + transform[3];
 }
 
 /**

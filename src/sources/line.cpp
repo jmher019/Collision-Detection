@@ -215,20 +215,22 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l2) const
 			// If segments not parallel, compute closest point on L1 to L2 and
 			// clamp to segment s1. Else pick arbitrary s (here 0)
 			if (denom != 0.f) {
-				s = clamp(d * f - c * e, 0.f, 1.f);
+				s = clamp((d * f - c * e) / denom, 0.f, 1.f);
 			}
 			else {
-				t = (d * s + f) / e;
+				s = 0.0f;
+			}
+			
+			t = (d * s + f) / e;
 
-				// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
-				if (t < 0.f) {
-					t = 0.f;
-					s = clamp(-c / b, 0.f, 1.f);
-				}
-				else if (t > 1.f) {
-					t = 1.f;
-					s = clamp((d - c) / b, 0.f, 1.f);
-				}
+			// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
+			if (t < 0.f) {
+				t = 0.f;
+				s = clamp(-c / b, 0.f, 1.f);
+			}
+			else if (t > 1.f) {
+				t = 1.f;
+				s = clamp((d - c) / b, 0.f, 1.f);
 			}
 		}
 	}
@@ -283,20 +285,22 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p2, const
 			// If segments not parallel, compute closest point on L1 to L2 and
 			// clamp to segment s1. Else pick arbitrary s (here 0)
 			if (denom != 0.f) {
-				s = clamp(d * f - c * e, 0.f, 1.f);
+				s = clamp((d * f - c * e) / denom, 0.f, 1.f);
 			}
 			else {
-				t = (d * s + f) / e;
+				s = 0.f;
+			}
+			
+			t = (d * s + f) / e;
 
-				// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
-				if (t < 0.f) {
-					t = 0.f;
-					s = clamp(-c / b, 0.f, 1.f);
-				}
-				else if (t > 1.f) {
-					t = 1.f;
-					s = clamp((d - c) / b, 0.f, 1.f);
-				}
+			// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
+			if (t < 0.f) {
+				t = 0.f;
+				s = clamp(-c / b, 0.f, 1.f);
+			}
+			else if (t > 1.f) {
+				t = 1.f;
+				s = clamp((d - c) / b, 0.f, 1.f);
 			}
 		}
 	}
@@ -350,20 +354,22 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l1, const
 			// If segments not parallel, compute closest point on L1 to L2 and
 			// clamp to segment s1. Else pick arbitrary s (here 0)
 			if (denom != 0.f) {
-				s = clamp(d * f - c * e, 0.f, 1.f);
+				s = clamp((d * f - c * e) / denom, 0.f, 1.f);
 			}
 			else {
-				t = (d * s + f) / e;
+				s = 0.f;
+			}
+			
+			t = (d * s + f) / e;
 
-				// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
-				if (t < 0.f) {
-					t = 0.f;
-					s = clamp(-c / b, 0.f, 1.f);
-				}
-				else if (t > 1.f) {
-					t = 1.f;
-					s = clamp((d - c) / b, 0.f, 1.f);
-				}
+			// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
+			if (t < 0.f) {
+				t = 0.f;
+				s = clamp(-c / b, 0.f, 1.f);
+			}
+			else if (t > 1.f) {
+				t = 1.f;
+				s = clamp((d - c) / b, 0.f, 1.f);
 			}
 		}
 	}
@@ -418,20 +424,22 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p1, const
 			// If segments not parallel, compute closest point on L1 to L2 and
 			// clamp to segment s1. Else pick arbitrary s (here 0)
 			if (denom != 0.f) {
-				s = clamp(d * f - c * e, 0.f, 1.f);
+				s = clamp((d * f - c * e) / denom, 0.f, 1.f);
 			}
 			else {
-				t = (d * s + f) / e;
+				s = 0.f;
+			}
+			
+			t = (d * s + f) / e;
 
-				// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
-				if (t < 0.f) {
-					t = 0.f;
-					s = clamp(-c / b, 0.f, 1.f);
-				}
-				else if (t > 1.f) {
-					t = 1.f;
-					s = clamp((d - c) / b, 0.f, 1.f);
-				}
+			// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
+			if (t < 0.f) {
+				t = 0.f;
+				s = clamp(-c / b, 0.f, 1.f);
+			}
+			else if (t > 1.f) {
+				t = 1.f;
+				s = clamp((d - c) / b, 0.f, 1.f);
 			}
 		}
 	}
@@ -486,20 +494,22 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const Line& l1, const
 			// If segments not parallel, compute closest point on L1 to L2 and
 			// clamp to segment s1. Else pick arbitrary s (here 0)
 			if (denom != 0.f) {
-				s = clamp(d * f - c * e, 0.f, 1.f);
+				s = clamp((d * f - c * e) / denom, 0.f, 1.f);
 			}
 			else {
-				t = (d * s + f) / e;
+				s = 0.f;
+			}
+			
+			t = (d * s + f) / e;
 
-				// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
-				if (t < 0.f) {
-					t = 0.f;
-					s = clamp(-c / b, 0.f, 1.f);
-				}
-				else if (t > 1.f) {
-					t = 1.f;
-					s = clamp((d - c) / b, 0.f, 1.f);
-				}
+			// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
+			if (t < 0.f) {
+				t = 0.f;
+				s = clamp(-c / b, 0.f, 1.f);
+			}
+			else if (t > 1.f) {
+				t = 1.f;
+				s = clamp((d - c) / b, 0.f, 1.f);
 			}
 		}
 	}
@@ -555,20 +565,22 @@ float Line::getClosestPtSegmentSegment(vec3& c1, vec3& c2, const vec3& p1, const
 			// If segments not parallel, compute closest point on L1 to L2 and
 			// clamp to segment s1. Else pick arbitrary s (here 0)
 			if (denom != 0.f) {
-				s = clamp(d * f - c * e, 0.f, 1.f);
+				s = clamp((d * f - c * e) / denom, 0.f, 1.f);
 			}
 			else {
-				t = (d * s + f) / e;
+				s = 0.f;
+			}
+			
+			t = (d * s + f) / e;
 
-				// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
-				if (t < 0.f) {
-					t = 0.f;
-					s = clamp(-c / b, 0.f, 1.f);
-				}
-				else if (t > 1.f) {
-					t = 1.f;
-					s = clamp((d - c) / b, 0.f, 1.f);
-				}
+			// If t in [0, 1] done. Else clamp t, recompute s for the new value of t
+			if (t < 0.f) {
+				t = 0.f;
+				s = clamp(-c / b, 0.f, 1.f);
+			}
+			else if (t > 1.f) {
+				t = 1.f;
+				s = clamp((d - c) / b, 0.f, 1.f);
 			}
 		}
 	}

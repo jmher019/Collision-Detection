@@ -71,7 +71,7 @@ const float& BoundingCapsule::getRadius(void) const {
  * @return void
  */
 void BoundingCapsule::update(const mat4& transform) {
-	const vec3 center = vec3(getCenter());
+	const vec3 center = vec3(getCenter()) + vec3(transform[3]);
 	
 	const mat3 upperLeft = mat3(transform);
 	const vec3 lineVector = 0.5f * (l.getPointB() - l.getPointA());
@@ -108,12 +108,9 @@ bool BoundingCapsule::isIntersecting(BoundingVolume*& bv) const {
 		float dist2 = triangles[0].getClosestPtSegmentTriangle(c1, c2, l);
 
 		for (size_t i = 1; i < triangles.size(); i++) {
-			vec3 c3, c4;
-			float currDist2 = triangles[i].getClosestPtSegmentTriangle(c3, c4,l);
+			float currDist2 = triangles[i].getClosestPtSegmentTriangle(c1, c2, l);
 			if (currDist2 < dist2) {
 				dist2 = currDist2;
-				c1 = c3;
-				c2 = c4;
 			}
 		}
 

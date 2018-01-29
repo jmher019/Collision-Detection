@@ -103,7 +103,7 @@ void Triangle::setVertex3(const vec3& v3) {
  * @return the normal to the triangle
  */
 vec3 Triangle::getNormal(void) const {
-	return cross(v2 - v1, v3 - v1);
+	return cross(v2 - v1, v3 - v2);
 }
 
 /**
@@ -115,7 +115,7 @@ vec3 Triangle::getNormal(void) const {
  * @return the normal to the triangle
  */
 vec3 Triangle::getNormal(const vec3& v1, const vec3& v2, const vec3& v3) {
-	return cross(v2 - v1, v3 - v1);
+	return cross(v2 - v1, v3 - v2);
 }
 
 /**
@@ -502,15 +502,15 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const vec3& p, c
 	vector<pair<vec3, vec3>> pairs;
 	// closest point between l and v1 -> v2 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	Line::getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, p, q, v1, v2);
+	Line::getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, p, q, v1, v2);
 
 	// closest point between l and v2 -> v3 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	Line::getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, p, q, v2, v3);
+	Line::getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, p, q, v2, v3);
 
 	// closest point between l and v3 -> v1 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	Line::getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, p, q, v3, v1);
+	Line::getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, p, q, v3, v1);
 
 	// closest point from the first vertex in l to the plane containing the triangle
 	const vec3 n = getNormal();
@@ -566,15 +566,15 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const Line& l, c
 	vector<pair<vec3, vec3>> pairs;
 	// closest point between l and v1 -> v2 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	l.getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, v1, v2);
+	l.getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, v1, v2);
 
 	// closest point between l and v2 -> v3 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	l.getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, v2, v3);
+	l.getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, v2, v3);
 
 	// closest point between l and v3 -> v1 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	l.getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, v3, v1);
+	l.getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, v3, v1);
 
 	// closest point from the first vertex in l to the plane containing the triangle
 	const vec3 n = getNormal(v1, v2, v3);
@@ -631,15 +631,15 @@ float Triangle::getClosestPtSegmentTriangle(vec3& c1, vec3& c2, const vec3& p, c
 	vector<pair<vec3, vec3>> pairs;
 	// closest point between l and v1 -> v2 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	Line::getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, p, q, v1, v2);
+	Line::getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, p, q, v1, v2);
 
 	// closest point between l and v2 -> v3 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	Line::getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, p, q, v2, v3);
+	Line::getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, p, q, v2, v3);
 
 	// closest point between l and v3 -> v1 segment
 	pairs.push_back(make_pair(vec3(), vec3()));
-	Line::getClosestPtSegmentSegment(pairs.back().first, pairs.back().second, p, q, v3, v1);
+	Line::getClosestPtSegmentSegment(pairs.back().second, pairs.back().first, p, q, v3, v1);
 
 	// closest point from the first vertex in l to the plane containing the triangle
 	const vec3 n = getNormal(v1, v2, v3);
