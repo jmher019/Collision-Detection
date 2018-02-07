@@ -27,7 +27,10 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(const vec3& initialHalfExtents):
  * @brief Copy constructor
  */
 AxisAlignedBoundingBox::AxisAlignedBoundingBox(const AxisAlignedBoundingBox& aabb): 
-	initialHalfExtents(aabb.initialHalfExtents), halfExtents(aabb.halfExtents) {}
+	initialHalfExtents(aabb.initialHalfExtents), halfExtents(aabb.halfExtents) {
+	transform = aabb.transform;
+	velocity = aabb.velocity;
+}
 
 /**
  * @bried Move constructor
@@ -35,6 +38,8 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(const AxisAlignedBoundingBox& aab
 AxisAlignedBoundingBox::AxisAlignedBoundingBox(AxisAlignedBoundingBox&& aabb) {
 	initialHalfExtents = move(aabb.initialHalfExtents);
 	halfExtents = move(aabb.halfExtents);
+	transform = move(aabb.transform);
+	velocity = move(aabb.velocity);
 }
 
 /**
@@ -225,4 +230,96 @@ bool AxisAlignedBoundingBox::isIntersecting(BoundingVolume*& bv) const {
 	// handle all others here
 	BoundingVolume* self = (BoundingVolume*)this;
 	return bv->isIntersecting(self);
+}
+
+/**
+ * @brief handles checking if a bounding volume is enclosed by this aabb
+ *
+ * @param bv the bounding volume that will be checked if it is enclosed
+ * @return bool that determines if the input volume is enclosed by the aabb
+ */
+bool AxisAlignedBoundingBox::enclosesGeometry(BoundingVolume*& bv) const {
+	// handle bounding sphere here
+	if (const BoundingSphere* bSphere = dynamic_cast<BoundingSphere*>(bv)) {
+		const float& bRadius = bSphere->getRadius();
+		const vec3 bCenter = bSphere->getCenter();
+		const vec3 bMin = bCenter - vec3(bRadius, bRadius, bRadius);
+		const vec3 bMax = bCenter + vec3(bRadius, bRadius, bRadius);
+
+		const vec3 center = vec3(getCenter());
+		const vec3 min = center - halfExtents;
+		const vec3 max = center + halfExtents;
+
+		for (int i = 0; i < 3; i++) {
+			if (bMin[i] < min[i]) return false;
+			else if (bMax[i] > max[i]) return false;
+		}
+		return true;
+	}
+	// handle axis aligned bounding box here
+	else if (const AxisAlignedBoundingBox* bAABB = dynamic_cast<AxisAlignedBoundingBox*>(bv)) {
+		const vec3 bCenter = bAABB->getCenter();
+		const vec3 bMin = bCenter - bAABB->getHalfExtents();
+		const vec3 bMax = bCenter + bAABB->getHalfExtents();
+
+		const vec3 center = vec3(getCenter());
+		const vec3 min = center - halfExtents;
+		const vec3 max = center + halfExtents;
+
+		for (int i = 0; i < 3; i++) {
+			if (bMin[i] < min[i]) return false;
+			else if (bMax[i] > max[i]) return false;
+		}
+		return true;
+	}
+
+	// handle all others here
+	BoundingVolume* self = (BoundingVolume*)this;
+	return bv->isEnclosed(self);
+}
+
+/**
+ * @brief handles checking if the aabb is enclosed by the bounding volume
+ *
+ * @param bv the bounding volume that will be checked to see if it encloses the aabb
+ * @return bool that determines if the input volume encloses the aabb
+ */
+bool AxisAlignedBoundingBox::isEnclosed(BoundingVolume*& bv) const {
+	// handle bounding sphere here
+	if (const BoundingSphere* bSphere = dynamic_cast<BoundingSphere*>(bv)) {
+		const float& bRadius = bSphere->getRadius();
+		const vec3 bCenter = bSphere->getCenter();
+		const vec3 bMin = bCenter - vec3(bRadius, bRadius, bRadius);
+		const vec3 bMax = bCenter + vec3(bRadius, bRadius, bRadius);
+
+		const vec3 center = vec3(getCenter());
+		const vec3 min = center - halfExtents;
+		const vec3 max = center + halfExtents;
+
+		for (int i = 0; i < 3; i++) {
+			if (bMin[i] > min[i]) return false;
+			else if (bMax[i] < max[i]) return false;
+		}
+		return true;
+	}
+	// handle axis aligned bounding box here
+	else if (const AxisAlignedBoundingBox* bAABB = dynamic_cast<AxisAlignedBoundingBox*>(bv)) {
+		const vec3 bCenter = bAABB->getCenter();
+		const vec3 bMin = bCenter - bAABB->getHalfExtents();
+		const vec3 bMax = bCenter + bAABB->getHalfExtents();
+
+		const vec3 center = vec3(getCenter());
+		const vec3 min = center - halfExtents;
+		const vec3 max = center + halfExtents;
+
+		for (int i = 0; i < 3; i++) {
+			if (bMin[i] > min[i]) return false;
+			else if (bMax[i] < max[i]) return false;
+		}
+		return true;
+	}
+
+	// handle all others here
+	BoundingVolume* self = (BoundingVolume*)this;
+	return bv->enclosesGeometry(self);
 }

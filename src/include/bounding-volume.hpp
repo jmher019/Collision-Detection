@@ -1,5 +1,5 @@
-#ifndef BOUNDING_VOUME_HPP
-#define BOUNDING_VOUME_HPP
+#ifndef BOUNDING_VOLUME_HPP
+#define BOUNDING_VOLUME_HPP
 
 /**
  *	@file		bounding-volume.hpp
@@ -15,7 +15,10 @@
  *
  */
 
+#include <memory>
+
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 using namespace glm;
 using namespace std;
@@ -56,7 +59,13 @@ namespace collision {
 
 		// function to implement that handles checking for intersection
 		virtual bool isIntersecting(BoundingVolume*& other) const = 0;
+
+		// function to implement that handles checking if the bounding volume encloses the other
+		virtual bool enclosesGeometry(BoundingVolume*& other) const = 0;
+
+		// function to implement that handles checking if the bounding volume is enclosed by the other
+		virtual bool isEnclosed(BoundingVolume*& other) const = 0;
 	};
 }
 
-#endif // !BOUNDING_VOUME_HPP
+#endif // !BOUNDING_VOLUME_HPP

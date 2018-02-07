@@ -54,6 +54,12 @@ namespace collision {
 
 		// handles checking for intersection
 		bool isIntersecting(BoundingVolume*& bv) const;
+
+		// handles checking if a bounding volume is enclosed by this sphere
+		bool enclosesGeometry(BoundingVolume*& bv) const;
+
+		// handles checking if the sphere is enclosed by the bounding volume
+		bool isEnclosed(BoundingVolume*& bv) const;
 	};
 }
 

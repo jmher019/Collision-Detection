@@ -29,6 +29,7 @@ BoundingSphere::BoundingSphere(const float& radius) :
 BoundingSphere::BoundingSphere(const BoundingSphere& s) :
 	radius(s.radius) {
 	transform = s.transform;
+	velocity = s.velocity;
 }
 
 /**
@@ -37,6 +38,33 @@ BoundingSphere::BoundingSphere(const BoundingSphere& s) :
 BoundingSphere::BoundingSphere(BoundingSphere&& s) :
 	radius(s.radius) {
 	transform = move(s.transform);
+	velocity = move(s.velocity);
+}
+
+/**
+ * @brief The assignment operator
+ *
+ * @return the calling sphere
+ */
+BoundingSphere& BoundingSphere::operator=(const BoundingSphere& s) {
+	transform = s.transform;
+	velocity = s.velocity;
+	radius = s.radius;
+
+	return *this;
+}
+
+/**
+ * @brief The move operator
+ *
+ * @return the calling sphere
+ */
+BoundingSphere& BoundingSphere::operator=(BoundingSphere&& s) {
+	transform = move(s.transform);
+	velocity = move(s.velocity);
+	radius = s.radius;
+
+	return *this;
 }
 
 /**
@@ -81,4 +109,45 @@ bool BoundingSphere::isIntersecting(BoundingVolume*& bv) const {
 	// handle all others here
 	BoundingVolume* self = (BoundingVolume*)this;
 	return bv->isIntersecting(self);
+}
+
+/**
+ * @brief handles checking if a bounding volume is enclosed by this sphere
+ *
+ * @param bv the bounding volume that will be checked if it is enclosed
+ * @return bool that determines if the input volume is enclosed by the sphere
+ */
+bool BoundingSphere::enclosesGeometry(BoundingVolume*& bv) const {
+	// handle bounding sphere here
+	if (const BoundingSphere* bSphere = dynamic_cast<BoundingSphere*>(bv)) {
+		const vec3 diff = vec3(getCenter()) - vec3(bSphere->getCenter());
+		const float fullDist = length(diff) + bSphere->getRadius();
+
+		return fullDist <= radius;
+	}
+
+	// handle all others here
+	BoundingVolume* self = (BoundingVolume*)this;
+	return bv->isEnclosed(self);
+}
+
+/**
+ * @brief handles checking if the sphere is enclosed by the bounding volume
+ *
+ * @param bv the bounding volume that will be checked to see if it encloses the sphere
+ * @return bool that determines if the input volume encloses the sphere
+ */
+bool BoundingSphere::isEnclosed(BoundingVolume*& bv) const {
+	// handle bounding sphere here
+	if (const BoundingSphere* bSphere = dynamic_cast<BoundingSphere*>(bv)) {
+		const vec3 diff = vec3(getCenter()) - vec3(bSphere->getCenter());
+		const float fullDist = length(diff) + radius;
+		const float& bRadius = bSphere->getRadius();
+
+		return fullDist <= bRadius;
+	}
+
+	// handle all others here
+	BoundingVolume* self = (BoundingVolume*)this;
+	return bv->enclosesGeometry(self);
 }

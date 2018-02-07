@@ -29,7 +29,10 @@ BoundingCapsule::BoundingCapsule(const Line& l, const vec3& lineNormal, const fl
  * @brief Copy constructor
  */
 BoundingCapsule::BoundingCapsule(const BoundingCapsule& bc):
-	l(bc.l), lineNormal(bc.lineNormal), secondLineNormal(bc.secondLineNormal), radius(bc.radius) {}
+	l(bc.l), lineNormal(bc.lineNormal), secondLineNormal(bc.secondLineNormal), radius(bc.radius) {
+	transform = bc.transform;
+	velocity = bc.velocity;
+}
 
 /**
  * @brief Move constructor
@@ -38,6 +41,8 @@ BoundingCapsule::BoundingCapsule(BoundingCapsule&& bc):
 	radius(bc.radius), l(bc.l) {
 	lineNormal = move(bc.lineNormal);
 	secondLineNormal = move(bc.secondLineNormal);
+	transform = move(bc.transform);
+	velocity = move(bc.velocity);
 }
 
 /**
@@ -150,4 +155,125 @@ bool BoundingCapsule::isIntersecting(BoundingVolume*& bv) const {
 	// handle all others here
 	BoundingVolume* self = (BoundingVolume*)this;
 	return bv->isIntersecting(self);
+}
+
+/**
+ * @brief handles checking if a bounding volume is enclosed by this capsule
+ *
+ * @param bv the bounding volume that will be checked if it is enclosed
+ * @return bool that determines if the input volume is enclosed by the capsule
+ */
+bool BoundingCapsule::enclosesGeometry(BoundingVolume*& bv) const {
+	// handle bounding sphere here
+	if (const BoundingSphere* bSphere = dynamic_cast<BoundingSphere*>(bv)) {
+		const vec3 bCenter = vec3(bSphere->getCenter());
+		const vec3 diff = l.getClosestPtPointSegment(bCenter) - bCenter;
+		const float fullDist = length(diff) + bSphere->getRadius();
+
+		return fullDist <= radius;
+	}
+	// handle axis aligned bounding box
+	else if (const AxisAlignedBoundingBox* bAABB = dynamic_cast<AxisAlignedBoundingBox*>(bv)) {
+		const vec3 bCenter = vec3(bAABB->getCenter());
+		const vec3 halfExtents = bAABB->getHalfExtents();
+
+		// make sure that each point in the box is contiained in the capsule
+		vector<vec3> pts;
+		pts.push_back(bCenter - halfExtents);
+		pts.push_back(bCenter + vec3(-halfExtents.x, -halfExtents.y, halfExtents.z));
+		pts.push_back(bCenter + vec3(halfExtents.x, -halfExtents.y, -halfExtents.z));
+		pts.push_back(bCenter + vec3(halfExtents.x, -halfExtents.y, halfExtents.z));
+		pts.push_back(bCenter + halfExtents);
+		pts.push_back(bCenter + vec3(halfExtents.x, halfExtents.y, -halfExtents.z));
+		pts.push_back(bCenter + vec3(-halfExtents.x, halfExtents.y, halfExtents.z));
+		pts.push_back(bCenter + vec3(-halfExtents.x, halfExtents.y, -halfExtents.z));
+
+		for (size_t i = 0; i < pts.size(); i++) {
+			const vec3 diff = l.getClosestPtPointSegment(pts[i]) - pts[i];
+			if (dot(diff, diff) > radius * radius) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+	// handle bounding capsule
+	else if (const BoundingCapsule* bCapsule = dynamic_cast<BoundingCapsule*>(bv)) {
+		const Line& bLine = bCapsule->getLine();
+		const vec3& bPoint1 = bLine.getPointA();
+		const vec3& bPoint2 = bLine.getPointB();
+		const vec3 diff1 = l.getClosestPtPointSegment(bPoint1) - bPoint1;
+		const vec3 diff2 = l.getClosestPtPointSegment(bPoint2) - bPoint2;
+		const float fullDist1 = length(diff1) + bCapsule->getRadius();
+		const float fullDist2 = length(diff2) + bCapsule->getRadius();
+
+		return fullDist1 <= radius && fullDist2 <= radius;
+	}
+
+	// handle all others here
+	BoundingVolume* self = (BoundingVolume*)this;
+	return bv->isEnclosed(self);
+}
+
+/**
+ * @brief handles checking if the sphere is enclosed by the bounding volume
+ *
+ * @param bv the bounding volume that will be checked to see if it encloses the capsule
+ * @return bool that determines if the input volume encloses the capsule
+ */
+bool BoundingCapsule::isEnclosed(BoundingVolume*& bv) const {
+	// handle bounding sphere here
+	if (const BoundingSphere* bSphere = dynamic_cast<BoundingSphere*>(bv)) {
+		const vec3& point1 = l.getPointA();
+		const vec3& point2 = l.getPointB();
+		const vec3 bCenter = vec3(bSphere->getCenter());
+		const vec3 diff1 = l.getClosestPtPointSegment(point1) - bCenter;
+		const vec3 diff2 = l.getClosestPtPointSegment(point2) - bCenter;
+		const float fullDist1 = length(diff1) + radius;
+		const float fullDist2 = length(diff2) + radius;
+
+		return fullDist1 <= bSphere->getRadius() && fullDist2 <= bSphere->getRadius();
+	}
+	// handle axis aligned bounding box
+	else if (const AxisAlignedBoundingBox* bAABB = dynamic_cast<AxisAlignedBoundingBox*>(bv)) {
+		const vec3 bCenter = vec3(bAABB->getCenter());
+		const vec3 bMin = bCenter - bAABB->getHalfExtents();
+		const vec3 bMax = bCenter + bAABB->getHalfExtents();
+
+		const vec3& center1 = l.getPointA();
+		const vec3 min1 = center1 - vec3(radius, radius, radius);
+		const vec3 max1 = center1 + vec3(radius, radius, radius);
+
+		const vec3& center2 = l.getPointB();
+		const vec3 min2 = center2 - vec3(radius, radius, radius);
+		const vec3 max2 = center2 + vec3(radius, radius, radius);
+
+		for (int i = 0; i < 3; i++) {
+			if (bMin[i] > min1[i]) return false;
+			else if (bMax[i] < max1[i]) return false;
+		}
+
+		for (int i = 0; i < 3; i++) {
+			if (bMin[i] > min2[i]) return false;
+			else if (bMax[i] < max2[i]) return false;
+		}
+		
+		return true;
+	}
+	// handle bounding capsule
+	else if (const BoundingCapsule* bCapsule = dynamic_cast<BoundingCapsule*>(bv)) {
+		const Line& bLine = bCapsule->getLine();
+		const vec3& point1 = l.getPointA();
+		const vec3& point2 = l.getPointB();
+		const vec3 diff1 = bLine.getClosestPtPointSegment(point1) - point1;
+		const vec3 diff2 = bLine.getClosestPtPointSegment(point2) - point2;
+		const float fullDist1 = length(diff1) + radius;
+		const float fullDist2 = length(diff2) + radius;
+
+		return fullDist1 <= bCapsule->getRadius() && fullDist2 <= bCapsule->getRadius();
+	}
+
+	// handle all others here
+	BoundingVolume* self = (BoundingVolume*)this;
+	return bv->enclosesGeometry(self);
 }

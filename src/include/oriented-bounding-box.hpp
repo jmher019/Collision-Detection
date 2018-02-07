@@ -23,6 +23,9 @@ namespace collision {
 	class OrientedBoundingBox : public BoundingVolume {
 	private:
 		vec3 halfExtents = vec3(0.f, 0.f, 0.f);
+		vec3 xAxis = vec3(1.f, 0.f, 0.f);
+		vec3 yAxis = vec3(0.f, 1.f, 0.f);
+		vec3 zAxis = vec3(0.f, 0.f, 1.f);
 
 	public:
 		// default constructor
@@ -38,13 +41,13 @@ namespace collision {
 		const vec3& getHalfExtents(void) const;
 
 		// get transformed x-axis
-		const vec3 getTransformedXAxis(void) const;
+		const vec3& getXAxis(void) const;
 
 		// get transformed y-axis
-		const vec3 getTransformedYAxis(void) const;
+		const vec3& getYAxis(void) const;
 
 		// get transformed z-axis
-		const vec3 getTransformedZAxis(void) const;
+		const vec3& getZAxis(void) const;
 
 		// gets the triangles that make up the box
 		vector<Triangle> getTriangles(void) const;
@@ -57,6 +60,12 @@ namespace collision {
 
 		// handles checking for intersection
 		bool isIntersecting(BoundingVolume*& bv) const;
+
+		// handles checking if a bounding volume is enclosed by this oriented bounding box
+		bool enclosesGeometry(BoundingVolume*& bv) const;
+
+		// handles checking if the oriented bounding box is enclosed by the bounding volume
+		bool isEnclosed(BoundingVolume*& bv) const;
 	};
 }
 
